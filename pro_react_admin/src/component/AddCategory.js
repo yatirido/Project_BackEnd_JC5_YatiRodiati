@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import Header from './Header';
 
 class AddCategory extends Component {
   addCategory = (event) => {
@@ -12,6 +13,8 @@ class AddCategory extends Component {
   render() {
     
     return (
+      <div className="container">
+      <Header />
       <div className="container">
         <form className="form-horizontal">
             <fieldset>
@@ -39,6 +42,7 @@ class AddCategory extends Component {
 
             </fieldset>
         </form>
+      </div>
       </div>
     )
   }

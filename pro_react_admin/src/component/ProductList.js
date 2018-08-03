@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios'; 
-// import {Link, Route} from 'react-router-dom';
-
-import Navbar from './Navbar';
 import Header from './Header';
 
 class ProductList extends Component 
@@ -36,6 +33,7 @@ class ProductList extends Component
           var CategoryID = data.categoryID
           var ProductName = data.productName;
           var ProductPrice = data.price;
+          var ProductPhoto = data.productPhoto;
 
           return <tr key={number} style={{textAlign: 'center'}}>
             <td>{no}</td>
@@ -43,6 +41,7 @@ class ProductList extends Component
             <td>{ProductName}</td>
             <td>{CategoryID}</td>
             <td>{ProductPrice}</td>
+            <td>{ProductPhoto}</td>
             <td>
               <Link to = {{pathname:'/editproduct/', state: {ProductID: ProductID}}} className="btn btn-warning">Edit</Link>&nbsp;
               <Link to = {{pathname:'/deleteproduct/', state: {ProductID: ProductID}}} className="btn btn-danger">Delete</Link>&nbsp;
@@ -73,6 +72,7 @@ class ProductList extends Component
                     <th style={{textAlign: 'center'}}>Product Name</th>
                     <th style={{textAlign: 'center'}}>Category ID</th>
                     <th style={{textAlign: 'center'}}>Price</th>
+                    <th style={{textAlign: 'center'}}>Photo</th>
                     <th style={{textAlign: 'center'}}>Actions</th>
                 </tr>
             </thead>

@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const database = require('mysql');
+const upload = require('express-fileupload');
 var koneksi = require('cors');
 var app = express();
 
@@ -17,6 +18,7 @@ dbs.connect();
 var port = 8000;
 
 app.use(koneksi());
+app.use(upload());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -36,25 +38,61 @@ app.get('/', (req, res) => {
 });
 
 // To add new product
-app.post('/addproduct', (req, res) => {
-    var productName = req.body.input1;
-    var categoryID = req.body.input2;
-    var productPrice = req.body.input3;
-    console.log (productName);
-    var queryAdd = `INSERT INTO product VALUES("${''}", "${categoryID}", "${productName}",  "${productPrice}")`;
+//Without Photo
+// app.post('/addproduct', (req, res) => {
+//     var productName = req.body.input1;
+//     var categoryID = req.body.input2;
+//     var productPrice = req.body.input3;
+//     console.log (productName);
+//     var queryAdd = `INSERT INTO product VALUES("${''}", "${categoryID}", "${productName}",  "${productPrice}")`;
     
-    dbs.query(queryAdd, (Err, queryResult) => {
-         if(Err){
-             throw Err;
-         } else {
-             res.end('Product has been successfully added')
-         }
-     });
- });
+//     dbs.query(queryAdd, (Err, queryResult) => {
+//          if(Err){
+//              throw Err;
+//          } else {
+//              res.end('Product has been successfully added')
+//          }
+//      });
+//  });
+// With Photo upload
+app.post('/addproduct', (req, res) => {
+    var nameprod = req.body.productname;
+    var idcat = req.body.categoryid;
+    var priceprod = req.body.productprice;
+    var fileName = req.files.file.name;
+    // console.log (productName);
 
-// Get and Query the Product Data (will be used for Update and Delete Product)
-app.get('/getproductdata/:productid', (req, res) => {
-    var grabData = `SELECT * FROM  product WHERE productID = ${req.params.productid}`;
+     // Ketika dapat kiriman yang berbentuk files maka akan dijalankan fungsi ini
+     if(req.files)
+     {
+         var fungsiFile = req.files.file;
+ 
+         fungsiFile.mv("./tampunganFile/"+fileName, (kaloError) => {
+             if(kaloError){
+                 console.log(kaloError);
+                 res.send('Upload failed');
+             } else {
+                 res.send('Upload berhasil');
+             }
+         })
+     }
+     
+     var queryAdd = `INSERT INTO product VALUES("${''}", "${idcat}", "${nameprod}", "${priceprod}", 
+        "${fileName}")`;    
+
+ dbs.query(queryAdd, (Err, queryResult) => {
+     if(Err){
+         throw Err;
+     } else {
+         res.end('Product has been successfully added')
+     }
+ });
+});
+
+// Get and Query the Product Data (will be used for first showing in Update and Delete Product page)
+app.get('/getproductdata/:id', (req, res) => 
+{
+    var grabData = `SELECT * FROM  product WHERE productID = ${req.params.id}`;
 
     dbs.query(grabData, (Err, queryResult) => {
         if(Err)
@@ -66,7 +104,6 @@ app.get('/getproductdata/:productid', (req, res) => {
             res.send(queryResult);
         }
     });
-    
 });
 
 // To Update product
@@ -76,7 +113,25 @@ app.post('/editproduct', (req, res) =>
     var nameprod = req.body.productname;
     var idcat = req.body.categoryid;
     var priceprod = req.body.productprice;
-    var queryUpdate = `UPDATE product SET productName = "${nameprod}", categoryID = "${idcat}", price = "${priceprod}" WHERE productID = "${idprod}" `;    
+    var fileName = req.files.file.name;
+
+    // Ketika dapat kiriman yang berbentuk files maka akan dijalankan fungsi ini
+    if(req.files)
+    {
+        var fungsiFile = req.files.file;
+
+        fungsiFile.mv("./tampunganFile/"+fileName, (kaloError) => {
+            if(kaloError){
+                console.log(kaloError);
+                res.send('Upload failed');
+            } else {
+                res.send('Upload berhasil');
+            }
+        })
+    }
+
+    var queryUpdate = `UPDATE product SET productName = "${nameprod}", categoryID = "${idcat}", 
+        price = "${priceprod}", productPhoto = "${fileName}" WHERE productID = "${idprod}" `;    
 
     dbs.query(queryUpdate, (Err, queryResult) => {
         if(Err){

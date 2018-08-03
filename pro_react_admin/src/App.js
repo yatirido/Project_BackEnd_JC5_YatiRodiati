@@ -3,6 +3,7 @@ import { Route } from 'react-router-dom';
 
 import './App.css';
 
+// import UserForm from './component/UserForm';
 import Login from './component/Login';
 import ProductList from './component/ProductList';
 import AddProduct from './component/AddProduct';
@@ -20,8 +21,8 @@ class App extends Component {
     return (
 
       <div>
-            {/* <Route exact path ="/" component={Login}/> */}
-            <Route exact path ="/" component={ProductList}/>
+            <Route exact path ="/" component={Login}/>
+            {/* <Route exact path ="/" component={UserForm}/> */}
             <Route path="/productcategories" component={ProductCategories}/>
             <Route path="/productlist" component={ProductList}/>
             <Route path="/invoices" component={Invoices}/>
